@@ -141,7 +141,16 @@ STATIC_URL = 'static/'
 
 MAILERS = {
     'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+        'BACKEND': 'django.core.mail.backends.smtp.EmailBackend',
+        'OPTIONS': {
+            'host': 'smtp.gmail.com',
+            'port': 587,
+            'username': 'geancaio926@gmail.com',
+            'password': 'xxxx xxxx xxxx xxxx', # Senha de aplicativo do Gmail
+            'use_tls': True,
+            'use_ssl': False,
+            'timeout': 20,
+        },
     },
 }
 
@@ -152,3 +161,6 @@ LOGOUT_REDIRECT_URL = '/accounts/login/'
 # Dados de ProjectUs
 
 SITENAME = 'ProjectUs'
+
+# Envio de e-mails
+
