@@ -103,3 +103,9 @@ class ProfileForm(forms.ModelForm):
             )
 
         return email
+
+
+class PasswordResetForm(forms.Form):
+    username = forms.CharField(label='Nome de usuário')
+
+
