@@ -1,19 +1,18 @@
-{% extends 'cadastro/base.html' %}
+
+{% extends 'projectus/_base.html' %}
 
 {% block titulo %}Login{% endblock %}
 
-{% block conteudo %}
+{% block content %}
 
-<section>
+<section class="auth-page">
 
-    <h1>Login</h1>
+    <div class="auth-card">
 
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <P><button type="submit">Entrar</button></P>
-    </form>
+        <div class="auth-header">
+            <div class="auth-icon">P</div>
 
-</section>
+            <h1>Bem-vindo de volta!</h1>
 
-{% endblock %}
+            <p>Entre na sua conta para continuar no ProjectUs.</p>
+        </div>
