@@ -1,0 +1,64 @@
+```django
+{% extends 'projectus/_base.html' %}
+
+{% block content %}
+<section class="auth-page">
+    <div class="auth-card register-card">
+
+        <div class="auth-header">
+            <div class="auth-icon" aria-hidden="true">P</div>
+
+            <h1>Crie sua conta</h1>
+            <p>Faça parte do ProjectUs e comece sua jornada!</p>
+        </div>
+
+        <form method="POST" class="auth-form">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="auth-errors" role="alert">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% for field in form %}
+                <div class="auth-field">
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+                        <div class="auth-help">
+                            {{ field.help_text|safe }}
+                        </div>
+                    {% endif %}
+
+                    {% for error in field.errors %}
+                        <p class="auth-error" role="alert">
+                            {{ error }}
+                        </p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="auth-button">
+                Criar minha conta
+                <span aria-hidden="true">&rarr;</span>
+            </button>
+        </form>
+
+        <div class="auth-links">
+            <p>
+                Já possui uma conta?
+                <a href="{% url 'login' %}">Entrar</a>
+            </p>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
+```

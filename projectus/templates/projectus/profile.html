@@ -1,0 +1,79 @@
+```django
+{% extends 'projectus/_base.html' %}
+
+{% block content %}
+<section class="auth-page">
+    <div class="auth-card profile-card">
+
+        <div class="auth-header">
+            <div class="auth-icon" aria-hidden="true">P</div>
+
+            <h1>Meu perfil</h1>
+            <p>
+                Olá, {{ request.user.username }}!
+                Mantenha seus dados atualizados.
+            </p>
+        </div>
+
+        <form method="POST" class="auth-form">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="auth-errors" role="alert">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% for field in form %}
+                <div class="auth-field">
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+                        <div class="auth-help">
+                            {{ field.help_text }}
+                        </div>
+                    {% endif %}
+
+                    {% for error in field.errors %}
+                        <p class="auth-error" role="alert">
+                            {{ error }}
+                        </p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="auth-button">
+                Salvar alterações
+                <span aria-hidden="true">&rarr;</span>
+            </button>
+        </form>
+
+        <div class="profile-security">
+            <div class="profile-security-icon" aria-hidden="true">
+                &#128274;
+            </div>
+
+            <div class="profile-security-content">
+                <h3>Segurança da conta</h3>
+                <p>Altere sua senha para manter sua conta protegida.</p>
+                <a href="{% url 'password_change' %}">
+                    Alterar minha senha
+                    <span aria-hidden="true">&rarr;</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="auth-links">
+            <a href="{% url 'home' %}">&larr; Voltar para o início</a>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
+```

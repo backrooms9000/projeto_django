@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" type="image/png"
+          href="{% static 'images/favicon.png' %}">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <title>{% block titulo %}{{ tag_title|default:'ProjectUs' }}{% endblock %}</title>
+</head>
+
+<body>
+
+    <div id="container">
+
+        <header>
+            <a href="{% url 'home' %}">
+                <h1>ProjectUs</h1>
+            </a>
+        </header>
+
+        <nav>
+            <a href="{% url 'home' %}">Início</a> ||
+
+            {% if user.is_authenticated %}
+            Olá, <a href="{% url 'profile' %}" title="Ver/editar perfil de {{ user.username}}">{{ user.username }}</a>!
+            |
+            <form method="POST" action="{% url 'logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit">Sair</button>
+            </form>
+            {% else %}
+            <a href="{% url 'login' %}">Entrar</a>
+            {% endif %}
+        </nav>
+
+        <main>
+
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer>
+            <div>&copy; 2026 {{ site_name }}</div>
+        </footer>
+
+    </div>
+
+</body>
+
+</html>

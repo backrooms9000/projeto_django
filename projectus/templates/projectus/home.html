@@ -1,13 +1,112 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
 
-    Minha home
-    
-</body>
-</html>
+{% extends 'projectus/_base.html' %}
+
+{% block content %}
+
+<section class="home-page">
+
+    <!-- Apresentação da página -->
+    <div class="home-hero">
+        <span class="home-label">PROJECTUS • COMUNIDADE</span>
+
+        <h2>Explore nossas publicações</h2>
+
+        <p>
+            Descubra conteúdos, leia novidades e encontre
+            algo interessante para você.
+        </p>
+    </div>
+
+    <!-- Cabeçalho da lista -->
+    <div class="posts-header">
+        <div>
+            <h3>Posts recentes</h3>
+            <p>Confira as últimas publicações.</p>
+        </div>
+
+        <div class="posts-counter">
+            <strong>{{ total }}</strong>
+            <span>
+                {% if total == 1 %}
+                    publicação
+                {% else %}
+                    publicações
+                {% endif %}
+            </span>
+        </div>
+    </div>
+
+    <!-- Lista de publicações -->
+    <div class="posts-grid">
+
+        {% for post in posts %}
+
+            <article class="post-card">
+
+                <a
+                    class="post-image-link"
+                    href="{% url 'post_view' id=post.id %}"
+                    aria-label="Ler {{ post.title }}"
+                >
+                    {% if post.thumbnail %}
+                        <img
+                            class="post-thumbnail"
+                            src="{{ post.thumbnail }}"
+                            alt="{{ post.title }}"
+                            loading="lazy"
+                        >
+                    {% else %}
+                        <div class="post-no-image">
+                            <span>PROJECTUS</span>
+                        </div>
+                    {% endif %}
+                </a>
+
+                <div class="post-body">
+
+                    <span class="post-category">
+                        PUBLICAÇÃO
+                    </span>
+
+                    <h4>
+                        <a href="{% url 'post_view' id=post.id %}">
+                            {{ post.title }}
+                        </a>
+                    </h4>
+
+                    <p class="post-summary">
+                        {{ post.summary }}
+                    </p>
+
+                    <a
+                        class="post-read-more"
+                        href="{% url 'post_view' id=post.id %}"
+                    >
+                        Ler publicação
+                        <span aria-hidden="true">&rarr;</span>
+                    </a>
+
+                </div>
+
+            </article>
+
+        {% empty %}
+
+            <div class="posts-empty">
+                <div class="empty-icon">&#128221;</div>
+
+                <h3>Nenhuma publicação por enquanto</h3>
+
+                <p>
+                    Ainda não temos posts disponíveis.
+                    Volte mais tarde para conferir as novidades!
+                </p>
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

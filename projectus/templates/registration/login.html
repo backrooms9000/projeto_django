@@ -1,0 +1,75 @@
+
+{% extends 'projectus/_base.html' %}
+
+{% block titulo %}Login{% endblock %}
+
+{% block content %}
+
+<section class="auth-page">
+
+    <div class="auth-card">
+
+        <div class="auth-header">
+            <div class="auth-icon">P</div>
+
+            <h1>Bem-vindo de volta!</h1>
+
+            <p>Entre na sua conta para continuar no ProjectUs.</p>
+        </div>
+
+        <form method="POST" class="auth-form">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="auth-errors">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% for field in form %}
+                <div class="auth-field">
+
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+                        <div class="auth-help">
+                            {{ field.help_text|safe }}
+                        </div>
+                    {% endif %}
+
+                    {% for error in field.errors %}
+                        <p class="auth-error">{{ error }}</p>
+                    {% endfor %}
+
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="auth-button">
+                Entrar na minha conta
+                <span aria-hidden="true">&rarr;</span>
+            </button>
+        </form>
+
+        <div class="auth-links">
+            <p>
+                Não possui uma conta?
+                <a href="{% url 'register' %}">Cadastre-se</a>
+            </p>
+
+            <p>
+                Esqueceu sua senha?
+                <a href="{% url 'password_reset' %}">Redefinir senha</a>
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
