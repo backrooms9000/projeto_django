@@ -1,74 +1,152 @@
+```django
 {% extends 'projectus/_base.html' %}
 
 {% block content %}
+<div class="post-layout">
 
-<article>
+    <article class="post-article">
 
-    <h2>{{ post.title }}</h2>
+        <header class="post-header">
+            <span class="post-category">ARTIGO DO PROJECTUS</span>
 
-    <small>Por {{ author_name }} em {{ post.created_at |date:"d/m/Y"}}.</small>
+            <h1>{{ post.title }}</h1>
 
-    <p><img src="{{ post.thumbnail }}" alt="{{ post.title }}"></p>
+            <p class="post-meta">
+                Por <strong>{{ author_name }}</strong>
+                <span aria-hidden="true">·</span>
+                <time datetime="{{ post.created_at|date:'Y-m-d' }}">
+                    {{ post.created_at|date:"d/m/Y" }}
+                </time>
+            </p>
+        </header>
 
-    <div style="padding: 16px 0">
-        {{ post.textbody }}
-    </div>
+        {% if post.thumbnail %}
+            <figure class="post-cover">
+                <img src="{{ post.thumbnail }}" alt="{{ post.title }}">
+            </figure>
+        {% endif %}
 
-    <hr>
-    <hr>
+        <div class="post-content">
+            {{ post.textbody|linebreaks }}
+        </div>
 
-    {% if user.is_authenticated %}
-    <h3>Comente</h3>
+        <section class="comments-section" id="comentarios">
+            <div class="section-heading">
+                <h2>Comentários</h2>
+                <span class="comments-count">{{ comments|length }}</span>
+            </div>
 
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_div }}
-        <button type="submit">Enviar</button>
-    </form>
-    &nbsp;
-    {% else %}
-    <p><a href="/accounts/login/">Logue-se para comentar</a></p>
-    {% endif %}
+            {% if user.is_authenticated %}
+                <div class="comment-form-card">
+                    <h3>Deixe sua opinião</h3>
+                    <p>Compartilhe suas ideias sobre este artigo.</p>
 
-    <hr>
-    <hr>
+                    <form method="POST" class="comment-form">
+                        {% csrf_token %}
 
-    <h3>Comentários</h3>
+                        {% if form.non_field_errors %}
+                            <div class="post-form-errors" role="alert">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
 
-    {% for comment in comments %}
-    <p>
-        <strong>{{ comment.user.username }}</strong>
-        <small>{{ comment.created_at|date:"d/m/Y \à\s H:i" }}</small>
-    </p>
-    <p>{{ comment.comment }}</p>
+                        {% for field in form %}
+                            <div class="comment-field">
+                                {% if field.label %}
+                                    <label for="{{ field.id_for_label }}">
+                                        {{ field.label }}
+                                    </label>
+                                {% endif %}
 
-    <hr>
-    {% empty %}
-    <p>Nenhum comentário ainda.</p>
-    {% endfor %}
+                                {{ field }}
 
-    <hr>
-    
+                                {% for error in field.errors %}
+                                    <p class="post-field-error" role="alert">
+                                        {{ error }}
+                                    </p>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
 
-</article>
+                        <button type="submit" class="post-button">
+                            Enviar comentário
+                            <span aria-hidden="true">&rarr;</span>
+                        </button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="comment-login-prompt">
+                    <p>Entre na sua conta para participar da conversa.</p>
+                    <a href="{% url 'login' %}" class="post-button">
+                        Entrar para comentar
+                    </a>
+                </div>
+            {% endif %}
 
-<aside>
-    <h3>Outros artigos de {{ author_name }}</h3>
+            <div class="comments-list">
+                {% for comment in comments %}
+                    <article class="comment-card">
+                        <div class="comment-avatar" aria-hidden="true">
+                            {{ comment.user.username|first|upper }}
+                        </div>
 
-    {% for post in posts %}
+                        <div class="comment-body">
+                            <div class="comment-author-row">
+                                <strong>{{ comment.user.username }}</strong>
+                                <time datetime="{{ comment.created_at|date:'Y-m-d\TH:i:s' }}">
+                                    {{ comment.created_at|date:"d/m/Y \à\s H:i" }}
+                                </time>
+                            </div>
 
-    <div>
-        <img src="{{ post.thumbnail }}" alt="{{ post.title }}" width="150">
-        <h4><a href="{% url 'post_view' id=post.id  %}">{{ post.title }}</a></h4>
-        <p>{{ post.summary }}</p>
-    </div>
-    <hr>
+                            <p>{{ comment.comment|linebreaksbr }}</p>
+                        </div>
+                    </article>
+                {% empty %}
+                    <div class="empty-comments">
+                        <p>Ainda não há comentários.</p>
+                        <span>Que tal ser a primeira pessoa a comentar?</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
 
-    {% empty %}
+    </article>
 
-    <p>Não achei nada.</p>
+    <aside class="post-sidebar">
+        <div class="sidebar-heading">
+            <span class="post-category">CONTINUE LENDO</span>
+            <h2>Outros artigos</h2>
+            <p>Mais publicações de {{ author_name }}.</p>
+        </div>
 
-    {% endfor %}
-</aside>
+        {% for related_post in posts %}
+            <article class="related-post">
+                {% if related_post.thumbnail %}
+                    <a href="{% url 'post_view' id=related_post.id %}"
+                       class="related-post-image"
+                       aria-label="Ler {{ related_post.title }}">
+                        <img src="{{ related_post.thumbnail }}"
+                             alt="{{ related_post.title }}">
+                    </a>
+                {% endif %}
 
+                <div class="related-post-content">
+                    <h3>
+                        <a href="{% url 'post_view' id=related_post.id %}">
+                            {{ related_post.title }}
+                        </a>
+                    </h3>
+
+                    <p>{{ related_post.summary }}</p>
+                </div>
+            </article>
+        {% empty %}
+            <p class="empty-related-posts">
+                Não há outros artigos para mostrar.
+            </p>
+        {% endfor %}
+    </aside>
+
+</div>
 {% endblock %}
+```
